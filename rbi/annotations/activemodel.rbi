@@ -1,5 +1,35 @@
 # typed: true
 
+module ActiveModel::Attributes
+  sig { returns(T::Array[String]) }
+  def attribute_names; end
+
+  sig { returns(T::Hash[String, T.untyped]) }
+  def attributes; end
+end
+
+module ActiveModel::Attributes::ClassMethods
+  sig { returns(T::Array[String]) }
+  def attribute_names; end
+end
+
+module ActiveModel::Dirty
+  sig { returns(T::Array[String]) }
+  def changed; end
+
+  sig { returns(T::Boolean) }
+  def changed?; end
+
+  sig { returns(ActiveSupport::HashWithIndifferentAccess) }
+  def changed_attributes; end
+
+  sig { returns(ActiveSupport::HashWithIndifferentAccess) }
+  def changes; end
+
+  sig { returns(ActiveSupport::HashWithIndifferentAccess) }
+  def previous_changes; end
+end
+
 class ActiveModel::Errors
   Elem = type_member { { fixed: ActiveModel::Error } }
 
@@ -82,4 +112,24 @@ end
 module ActiveModel::Validations
   sig { returns(ActiveModel::Errors) }
   def errors; end
+end
+
+module ActiveModel::Validations::Callbacks::ClassMethods
+  has_attached_class!(:out)
+
+  sig do
+    params(
+      args: T.untyped,
+      block: T.nilable(T.proc.bind(T.attached_class).params(record: T.attached_class).void)
+    ).void
+  end
+  def before_validation(*args, &block); end
+
+  sig do
+    params(
+      args: T.untyped,
+      block: T.nilable(T.proc.bind(T.attached_class).params(record: T.attached_class).void)
+    ).void
+  end
+  def after_validation(*args, &block); end
 end
